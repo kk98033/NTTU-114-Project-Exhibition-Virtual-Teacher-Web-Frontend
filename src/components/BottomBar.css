@@ -1,0 +1,67 @@
+/* 底部欄位設計 */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    /* 固定在底部 */
+    left: 0;
+    width: 100%;
+    /* 占滿整個寬度 */
+    height: 25%;
+    /* 占據視窗的 25% 高度，顯得更大 */
+    background-color: #2d2d2d;
+    /* 底部背景顏色 */
+    display: flex;
+    justify-content: center;
+    /* 水平置中 */
+    align-items: center;
+    /* 垂直置中 */
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.3);
+    /* 輕微的陰影效果 */
+}
+
+/* 語音按鈕設置 */
+.voice-button {
+    background-color: #4f9a94;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 40px;
+    /* 語音按鈕的內間距增大 */
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* 輕微的陰影效果 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, transform 0.3s;
+    /* 增加變化動畫 */
+}
+
+.voice-button:hover {
+    background-color: #3a756e;
+    /* 滑鼠懸停時變色 */
+}
+
+.voice-button.recording {
+    background-color: #e74c3c;
+    /* 錄音中背景變成紅色 */
+    animation: pulse 1s infinite;
+    /* 添加一個脈衝動畫效果 */
+    transform: scale(1.1);
+    /* 錄音時按鈕稍微變大 */
+}
+
+/* 脈衝動畫效果 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
