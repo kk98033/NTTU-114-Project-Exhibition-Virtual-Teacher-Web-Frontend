@@ -1,0 +1,141 @@
+/* 聊天框設置：置於螢幕的下方 30% 位置，適配 1080x1920 並加長寬度 */
+.chat-box {
+    position: fixed;
+    bottom: 30%;
+    /* 置於螢幕下方 30% */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    /* 占螢幕寬度的 90%，寬度更長 */
+    height: auto;
+    /* 高度自適應 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: transparent;
+    /* 背景透明 */
+}
+
+/* 聊天記錄區域 */
+.chat-history {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: transparent;
+    /* 背景透明 */
+    color: white;
+    font-size: 24px;
+    /* 字體大小為 24px */
+    max-height: 600px;
+    /* 設置最大高度，避免溢出 */
+}
+
+/* 聊天訊息樣式 */
+.chat-message {
+    margin-bottom: 10px;
+    padding: 15px;
+    /* 增加 padding，讓文字周圍更舒適 */
+    border-radius: 8px;
+    max-width: 100%;
+    /* 最大寬度調整為 100%，適應更寬的區域 */
+    word-wrap: break-word;
+    background-color: rgba(255, 255, 255, 0.2);
+    /* 訊息背景半透明 */
+    color: white;
+    font-size: 24px;
+    /* 調整字體大小為 24px */
+}
+
+/* 使用者訊息樣式 */
+.chat-message.user {
+    background-color: rgba(79, 154, 148, 0.8);
+    /* 使用者訊息顏色 */
+    align-self: flex-end;
+}
+
+/* Bot 訊息樣式 */
+.chat-message.bot {
+    background-color: rgba(58, 58, 58, 0.8);
+    /* Bot 訊息顏色 */
+    align-self: flex-start;
+}
+
+/* 輸入區域樣式 */
+.input-area {
+    display: flex;
+    padding: 10px;
+    background-color: transparent;
+    /* 底部輸入框背景透明 */
+}
+
+/* 聊天輸入框樣式 */
+.chat-input {
+    flex-grow: 1;
+    padding: 12px;
+    /* 增加輸入框內的填充 */
+    border: 1px solid #555;
+    border-radius: 4px;
+    margin-right: 10px;
+    background-color: #1c1c1c;
+    color: #f1f1f1;
+    font-size: 20px;
+    /* 調整輸入框字體大小為 20px */
+}
+
+/* 發送按鈕樣式 */
+.send-button {
+    padding: 12px 24px;
+    background-color: #4f9a94;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    /* 調整按鈕字體大小 */
+    cursor: pointer;
+}
+
+.send-button:hover {
+    background-color: #3a756e;
+}
+
+/* 思考中的指示樣式 */
+.thinking-indicator {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 18px;
+    /* 調整「思考中」的字體大小 */
+    color: #888;
+}
+
+/* 旋轉的思考中指示器 */
+.spinner {
+    width: 20px;
+    /* 調整指示器大小 */
+    height: 20px;
+    border: 2px solid #888;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 滾動條樣式 */
+.chat-history::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
+}
