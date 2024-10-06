@@ -1,0 +1,36 @@
+/* 快速問題按鈕區域 */
+.quick-questions {
+    position: fixed;
+    bottom: 23%;
+    /* 在 BottomBar 和 ChatBox 中間 */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    /* 占用 80% 的寬度 */
+    z-index: 10;
+    /* 保證不被 BottomBar 或其他元素蓋住 */
+}
+
+/* 快速問題按鈕 */
+.question-button {
+    padding: 15px 30px;
+    background-color: #4f9a94;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    /* 圓角長方形 */
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-grow: 1;
+    margin: 0 10px;
+    text-align: center;
+}
+
+.question-button:hover {
+    background-color: #3a756e;
+    /* 滑鼠懸停時變色 */
+}
