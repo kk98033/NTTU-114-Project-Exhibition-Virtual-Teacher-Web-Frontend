@@ -17,10 +17,11 @@ import backgroundImage from '../assets/images/background.jpg';
 
 const VRMViewer = () => {
     const mountRef = useRef(null);
-    const fileInputRef = useRef(null); // 引用文件輸入（如果需要更換背景）
-    const [currentVrm, setCurrentVrm] = useState(null);
-    const [currentMixer, setCurrentMixer] = useState(null);
-    const [bgImage, setBgImage] = useState(backgroundImage); // 添加背景圖片狀態
+    const fileInputRef = useRef(null);
+    const currentVrmRef = useRef(null); // 使用 useRef 管理當前的 VRM 模型
+    const modelContainerRef = useRef(null); // 新增父級容器的引用
+    const mixerRef = useRef(null);
+    const [bgImage, setBgImage] = useState(backgroundImage);
     const sceneRef = useRef(new THREE.Scene());
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
@@ -30,8 +31,11 @@ const VRMViewer = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const modelLoadedRef = useRef(false); // 防止模型重複加載
+
     // 初始化 Three.js
     useEffect(() => {
+        console.log('初始化 Three.js 的 useEffect 被調用');
         const scene = sceneRef.current;
 
         // 加載背景圖片並設置為背景
@@ -88,15 +92,20 @@ const VRMViewer = () => {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
+        // 創建模型的父級容器
+        const modelContainer = new THREE.Group();
+        scene.add(modelContainer);
+        modelContainerRef.current = modelContainer;
+
         // 啟動畫面渲染
         const animate = () => {
             requestAnimationFrame(animate);
             const deltaTime = clockRef.current.getDelta();
-            if (currentMixer) {
-                currentMixer.update(deltaTime);
+            if (mixerRef.current) {
+                mixerRef.current.update(deltaTime);
             }
-            if (currentVrm) {
-                currentVrm.update(deltaTime);
+            if (currentVrmRef.current) {
+                currentVrmRef.current.update(deltaTime);
             }
             composer.render();
         };
@@ -128,15 +137,28 @@ const VRMViewer = () => {
             if (controlsRef.current) {
                 controlsRef.current.dispose();
             }
-            if (currentVrm) {
-                scene.remove(currentVrm.scene);
-                VRMUtils.deepDispose(currentVrm.scene);
+            if (currentVrmRef.current) {
+                modelContainerRef.current.remove(currentVrmRef.current.scene);
+                VRMUtils.deepDispose(currentVrmRef.current.scene);
+                currentVrmRef.current = null;
+            }
+            if (mixerRef.current) {
+                mixerRef.current.stopAllAction();
+                mixerRef.current.uncacheRoot(currentVrmRef.current?.scene);
+                mixerRef.current = null;
             }
         };
     }, []); // 空依賴陣列，僅在組件掛載時運行一次
 
     // 加載 VRM 模型
     useEffect(() => {
+        console.log('加載 VRM 模型的 useEffect 被調用');
+        if (modelLoadedRef.current) {
+            console.log('模型已加載，跳過重複加載');
+            return;
+        }
+        modelLoadedRef.current = true;
+
         if (!mountRef.current) return;
 
         const scene = sceneRef.current;
@@ -153,23 +175,42 @@ const VRMViewer = () => {
             defaultModelUrl,
             (gltf) => {
                 const vrm = gltf.userData.vrm;
-                if (currentVrm) {
-                    scene.remove(currentVrm.scene);
-                    VRMUtils.deepDispose(currentVrm.scene);
+                if (currentVrmRef.current) {
+                    modelContainerRef.current.remove(currentVrmRef.current.scene);
+                    VRMUtils.deepDispose(currentVrmRef.current.scene);
                 }
                 VRMUtils.removeUnnecessaryJoints(vrm.scene);
-                setCurrentVrm(vrm);
-                scene.add(vrm.scene);
+                currentVrmRef.current = vrm; // 更新 currentVrmRef
+
+                // 將模型添加到父級容器
+                modelContainerRef.current.add(vrm.scene);
+
                 vrm.scene.traverse((obj) => {
                     obj.frustumCulled = false;
                 });
                 VRMUtils.rotateVRM0(vrm);
-                console.log(vrm);
+
+                // 調整父級容器的位置和縮放
+                modelContainerRef.current.position.set(0, -1.5, 0); // 將模型稍微向下移動
+                modelContainerRef.current.scale.set(2, 2, 2); // 將模型放大 2 倍
+
+                console.log('VRM 模型加載成功:', vrm);
 
                 // 控制 blendshape 動畫
                 controlBlendShapes(vrm);
 
+                // 列出骨骼名稱
+                Object.keys(vrm.humanoid.humanBones).forEach((bone) => {
+                    const node = vrm.humanoid.getNormalizedBoneNode(bone);
+                    if (node) {
+                        console.log(`VRM 骨骼: ${bone} - 節點名稱: ${node.name}`);
+                    }
+                });
+
                 setLoading(false);
+
+                // 加載完成後套用動畫
+                applyFBXAnimation();
             },
             undefined,
             (error) => {
@@ -181,9 +222,10 @@ const VRMViewer = () => {
 
         // 清理資源（如果需要）
         return () => {
-            if (currentVrm) {
-                scene.remove(currentVrm.scene);
-                VRMUtils.deepDispose(currentVrm.scene);
+            if (currentVrmRef.current) {
+                modelContainerRef.current.remove(currentVrmRef.current.scene);
+                VRMUtils.deepDispose(currentVrmRef.current.scene);
+                currentVrmRef.current = null;
             }
         };
     }, []); // 空依賴陣列，僅在組件掛載時運行一次
@@ -223,6 +265,31 @@ const VRMViewer = () => {
             const url = URL.createObjectURL(file);
             setBgImage(url);
         }
+    };
+
+    // 套用 FBX 動畫
+    const applyFBXAnimation = () => {
+        const animationUrl = '/animations/animation.fbx'; // 確保路徑正確
+        if (!currentVrmRef.current) {
+            console.error('尚未加載 VRM 模型');
+            return;
+        }
+
+        loadMixamoAnimation(animationUrl, currentVrmRef.current)
+            .then((clip) => {
+                console.log('FBX 動畫加載成功');
+                if (mixerRef.current) {
+                    mixerRef.current.stopAllAction(); // 停止所有動作
+                } else {
+                    mixerRef.current = new THREE.AnimationMixer(currentVrmRef.current.scene);
+                }
+                const action = mixerRef.current.clipAction(clip);
+                action.play();
+            })
+            .catch((error) => {
+                console.error('FBX 動畫加載失敗:', error);
+                setError('FBX 動畫加載失敗');
+            });
     };
 
     return (
@@ -284,13 +351,10 @@ const VRMViewer = () => {
                 </div>
             )}
 
-            <div
-                ref={mountRef}
-                style={{ width: '100%', height: '100vh' }}
-            >
+            <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>
                 {/* 渲染區域，不顯示任何文字 */}
             </div>
-            {currentVrm && <ExpressionControls vrm={currentVrm} />} {/* 添加表情控制器 */}
+            {currentVrmRef.current && <ExpressionControls vrm={currentVrmRef.current} />} {/* 添加表情控制器 */}
         </div>
     );
 };
