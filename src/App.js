@@ -4,8 +4,12 @@ import VRMViewer from './components/VRMViewer';
 import ChatBox from './components/ChatBox';
 import BottomBar from './components/BottomBar';
 import QuickQuestions from './components/QuickQuestions';
+import { useLoading } from './components/LoadingContext';
+import LoadingOverlay from './components/LoadingOverlay';
 
 function App() {
+    const { isLoading } = useLoading();
+
     // 函數來進入全螢幕模式
     const requestFullScreen = () => {
         const elem = document.documentElement; // 取得整個 HTML 文件作為全螢幕對象
@@ -37,6 +41,7 @@ function App() {
 
     return (
         <div className="App">
+            {isLoading && <LoadingOverlay show={isLoading} />} {/* 顯示 Loading 動畫 */}
             <button onClick={requestFullScreen} style={{ position: 'absolute', top: '10px', right: '10px', padding: '10px 20px', zIndex: 100 }}>
                 進入全螢幕
             </button>
