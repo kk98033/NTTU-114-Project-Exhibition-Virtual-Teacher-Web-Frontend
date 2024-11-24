@@ -1,39 +1,77 @@
-.App {
-  text-align: center;
+/* 基礎樣式 */
+body, html, .App {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* 確保沒有滾動條 */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* 隱藏滾動條的瀏覽器特定樣式 */
+body::-webkit-scrollbar, html::-webkit-scrollbar, .App::-webkit-scrollbar {
+  display: none; /* 隱藏 Chrome, Safari 和 Edge 的滾動條 */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body, html, .App {
+  -ms-overflow-style: none;  /* 隱藏 IE 和 Edge 的滾動條 */
+  scrollbar-width: none;      /* 隱藏 Firefox 的滾動條 */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* 全螢幕模式下強制隱藏滾動條 */
+:-webkit-full-screen {
+  overflow: hidden; /* Chrome 全螢幕模式下隱藏滾動條 */
+}
+
+:-moz-full-screen {
+  overflow: hidden; /* Firefox 全螢幕模式下隱藏滾動條 */
+}
+
+:fullscreen {
+  overflow: hidden; /* 通用全螢幕模式下隱藏滾動條 */
+}
+
+/* 確保所有元素都適應全螢幕 */
+html, body, .App, .VRMViewer, .ChatBox, .QuickQuestions, .BottomBar {
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 具體組件佈局 */
+.VRMViewer {
+  flex: 1;
+}
+
+.ChatBox {
+  position: fixed;
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: auto;
+  background-color: transparent;
+}
+
+.QuickQuestions {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
+  width: 80%;
+}
+
+.BottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 25%;
+  background-color: #2d2d2d;
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  align-items: center;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.3);
 }
