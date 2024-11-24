@@ -1,17 +1,17 @@
-// src/components/LoadingOverlay.js
-import React from "react";
-import "./LoadingOverlay.css"; // 自定義樣式檔案
+import React from 'react';
+import './LoadingOverlay.css';
 
 const LoadingOverlay = ({ show }) => {
+  if (!show) return null; // 如果不需要顯示，直接返回 null
+
   return (
-    show && (
-      <div className="loading-overlay">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="loading-text">Processing...</p>
+    <div className="loading-overlay">
+      <div className="voice-assistant-loader">
+        <div className="circle"></div>
+        <div className="circle circle-2"></div>
+        <div className="circle circle-3"></div>
       </div>
-    )
+    </div>
   );
 };
 

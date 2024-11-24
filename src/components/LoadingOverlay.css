@@ -5,16 +5,69 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background-color: transparent; /* 背景透明 */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1050;
-  }
+    z-index: 9999;
+    overflow: hidden;
+}
   
-  .loading-text {
-    margin-top: 1rem;
-    color: #fff;
-    font-size: 1.5rem;
-  }
-  
+/* 語音助理的 Loading 動畫容器 */
+.voice-assistant-loader {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+/* 圓形基礎樣式 */
+.circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(79, 154, 148, 0.6); /* 主體綠色 */
+    animation: pulse 2s infinite ease-in-out;
+    box-shadow: 0 0 10px rgba(79, 154, 148, 0.5),
+        0 0 20px rgba(79, 154, 148, 0.4),
+        0 0 30px rgba(79, 154, 148, 0.3); /* 綠色光暈 */
+}
+
+/* 第二層圓形樣式 */
+.circle-2 {
+    width: 80px;
+    height: 80px;
+    background: rgba(79, 154, 148, 0.4); /* 主體綠色（更淡） */
+    animation: pulse 2s infinite ease-in-out 0.5s;
+    box-shadow: 0 0 15px rgba(79, 154, 148, 0.3),
+      0 0 25px rgba(79, 154, 148, 0.2); /* 更淡的光暈 */
+}
+
+/* 第三層圓形樣式 */
+.circle-3 {
+    width: 100px;
+    height: 100px;
+    background: rgba(79, 154, 148, 0.2); /* 更淡的主體綠色 */
+    animation: pulse 2s infinite ease-in-out 1s;
+    box-shadow: 0 0 20px rgba(79, 154, 148, 0.2),
+      0 0 30px rgba(79, 154, 148, 0.1); /* 更淡的光暈 */
+}
+
+/* 呼吸動畫效果 */
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
