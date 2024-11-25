@@ -8,6 +8,8 @@
 # testing
 /coverage
 /.history
+*wav
+*mp3
 
 # production
 /build
