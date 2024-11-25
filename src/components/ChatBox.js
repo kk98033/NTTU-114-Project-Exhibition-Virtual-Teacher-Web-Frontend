@@ -33,7 +33,7 @@ const ChatBox = () => {
 
     const handleSendMessage = async () => {
         // 定義本地音頻文件路徑
-        const audioPath = "/test_audios/test.mp3"; // 靜態文件在 public 文件夾中
+        const audioPath = "/test_audios/test.wav"; // 靜態文件在 public 文件夾中
         try {
             showLoading();
 
