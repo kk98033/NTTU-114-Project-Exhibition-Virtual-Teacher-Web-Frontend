@@ -6,6 +6,7 @@ import BottomBar from './components/BottomBar';
 import QuickQuestions from './components/QuickQuestions';
 import { useLoading } from './components/LoadingContext';
 import LoadingOverlay from './components/LoadingOverlay';
+import { VRMProvider } from './context/VRMContext';
 
 function App() {
     const { isLoading } = useLoading();
@@ -40,16 +41,18 @@ function App() {
     }, []);
 
     return (
-        <div className="App">
-            {isLoading && <LoadingOverlay show={isLoading} />} {/* 顯示 Loading 動畫 */}
-            <button onClick={requestFullScreen} style={{ position: 'absolute', top: '10px', right: '10px', padding: '10px 20px', zIndex: 100 }}>
-                進入全螢幕
-            </button>
-            <VRMViewer />
-            <ChatBox />
-            <QuickQuestions />
-            <BottomBar />
-        </div>
+        <VRMProvider>
+            <div className="App">
+                {isLoading && <LoadingOverlay show={isLoading} />}
+                <button onClick={requestFullScreen} style={{ position: 'absolute', top: '10px', right: '10px', padding: '10px 20px', zIndex: 100 }}>
+                    進入全螢幕
+                </button>
+                <VRMViewer />
+                <ChatBox />
+                <QuickQuestions />
+                <BottomBar />
+            </div>
+        </VRMProvider>
     );
 }
 

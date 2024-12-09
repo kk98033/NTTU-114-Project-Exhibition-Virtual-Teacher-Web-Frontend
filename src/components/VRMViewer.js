@@ -10,15 +10,27 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader';
 import { controlBlendShapes } from './controlBlendShapes';
-import ExpressionControls from './ExpressionControls'; // 引入 ExpressionControls 組件
+import ExpressionControls from './ExpressionControls'; 
 
 // 引入背景圖片
 import backgroundImage from '../assets/images/background.jpg';
+import { syncMouthAnimation } from '../utils/syncMouthAnimation';
+import { useVRM } from '../context/VRMContext';
+
+// export const playProcessedAudioWithMouthAnimation = (audioUrl) => {
+//     if (!currentVrmRef.current) {
+//         console.error('VRM 模型未加載');
+//         return;
+//     }
+
+//     syncMouthAnimation(audioUrl, currentVrmRef.current);
+// };
 
 const VRMViewer = () => {
+    const { currentVrmRef } = useVRM(); // 使用共享的 currentVrmRef
     const mountRef = useRef(null);
     const fileInputRef = useRef(null);
-    const currentVrmRef = useRef(null); // 使用 useRef 管理當前的 VRM 模型
+    // const currentVrmRef = useRef(null); // 使用 useRef 管理當前的 VRM 模型
     const modelContainerRef = useRef(null); // 新增父級容器的引用
     const mixerRef = useRef(null);
     const [bgImage, setBgImage] = useState(backgroundImage);
