@@ -1,3 +1,5 @@
+import { loadVRMAnimation } from "./animationUtils";
+
 export const syncMouthAnimation = (audioUrl, vrm, loadAnimation) => {
 
     if (!vrm || !vrm.expressionManager) {
@@ -139,6 +141,7 @@ export const syncMouthAnimation = (audioUrl, vrm, loadAnimation) => {
 
         // 觸發回到 idle 動畫
         loadAnimation('/animations/idle.fbx');
+        loadVRMAnimation('animations/vrma/VRMA_02.vrma');
     });
     
 

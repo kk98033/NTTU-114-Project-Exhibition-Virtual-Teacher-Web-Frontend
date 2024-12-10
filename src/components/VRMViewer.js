@@ -17,6 +17,7 @@ import backgroundImage from '../assets/images/background.jpg';
 import { syncMouthAnimation } from '../utils/syncMouthAnimation';
 import { useVRM } from '../context/VRMContext';
 import { applyFBXAnimation } from '../utils/animationUtils';
+import { VRMAnimationLoaderPlugin, VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
 
 // export const playProcessedAudioWithMouthAnimation = (audioUrl) => {
 //     if (!currentVrmRef.current) {
@@ -28,7 +29,7 @@ import { applyFBXAnimation } from '../utils/animationUtils';
 // };
 
 const VRMViewer = () => {
-    const { currentVrmRef, mixerRef, loadAnimation } = useVRM(); // 從 Context 獲取共享數據
+    const { currentVrmRef, mixerRef, loadAnimation, loadVRMAnimation } = useVRM(); // 從 Context 獲取共享數據
     const mountRef = useRef(null);
     const fileInputRef = useRef(null);
     // const currentVrmRef = useRef(null); // 使用 useRef 管理當前的 VRM 模型
@@ -180,6 +181,7 @@ const VRMViewer = () => {
         const defaultModelUrl = '/models/teacher.vrm'; // 放在 public/models/teacher.vrm
         const loader = new GLTFLoader();
         loader.register((parser) => new VRMLoaderPlugin(parser));
+        loader.register((parser) => new VRMAnimationLoaderPlugin(parser));
 
         setLoading(true);
         setError(null);
@@ -194,6 +196,14 @@ const VRMViewer = () => {
                 }
                 VRMUtils.removeUnnecessaryJoints(vrm.scene);
                 currentVrmRef.current = vrm; // 更新 currentVrmRef
+
+                // 手動創建 VRMLookAtQuaternionProxy
+                if (!vrm.lookAt.quaternionProxy) {
+                    const lookAtQuatProxy = new VRMLookAtQuaternionProxy(vrm.lookAt);
+                    vrm.lookAt.quaternionProxy = lookAtQuatProxy;
+                    vrm.scene.add(lookAtQuatProxy);
+                }
+
 
                 // 將模型添加到父級容器
                 modelContainerRef.current.add(vrm.scene);
@@ -224,7 +234,7 @@ const VRMViewer = () => {
 
                 // 加載完成後套用動畫
                 // loadAnimation('/animations/idle.fbx');
-                loadAnimation('animations/vrma/VRMA_01.vrma');
+                loadVRMAnimation('animations/vrma/VRMA_02.vrma');
 
                 // 自動加載默認動畫
                 // loadAnimation('/animations/Talking.fbx');
