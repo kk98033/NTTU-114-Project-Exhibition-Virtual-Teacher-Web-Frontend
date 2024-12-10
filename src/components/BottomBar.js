@@ -42,7 +42,7 @@ export const processAudioForMouthAnimation = (audioUrl, vrm) => {
 };
 
 const BottomBar = () => {
-    const { currentVrmRef, loadAnimation  } = useVRM(); // 使用共享的 currentVrmRef
+    const { currentVrmRef, loadAnimation, loadVRMAnimation  } = useVRM(); // 使用共享的 currentVrmRef
     const [isRecording, setIsRecording] = useState(false); // 控制錄音狀態
     const [mediaRecorder, setMediaRecorder] = useState(null); // MediaRecorder 物件
     const [audioChunks, setAudioChunks] = useState([]); // 存儲錄音的音訊資料
@@ -100,7 +100,7 @@ const BottomBar = () => {
                 // 呼叫 API 發送音訊
                 const processedAudioUrl = await uploadAndProcessAudio(blob);
 
-                syncMouthAnimation(processedAudioUrl, currentVrmRef.current, loadAnimation); // 使用共享的 currentVrmRef
+                syncMouthAnimation(processedAudioUrl, currentVrmRef.current, loadAnimation, loadVRMAnimation); // 使用共享的 currentVrmRef
 
                 // 播放處理後的音頻
                 const audioElement = new Audio(processedAudioUrl);
@@ -129,7 +129,7 @@ const BottomBar = () => {
     
         // 每次測試重新啟動音頻和嘴巴同步邏輯
         if (currentVrmRef.current) {
-            syncMouthAnimation(audioUrl, currentVrmRef.current, loadAnimation);
+            syncMouthAnimation(audioUrl, currentVrmRef.current, loadAnimation, loadVRMAnimation);
         }
     
         console.log('測試音頻開始循環播放');

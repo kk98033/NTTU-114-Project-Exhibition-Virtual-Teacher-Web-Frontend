@@ -27,6 +27,7 @@ export const VRMProvider = ({ children }) => {
             console.error('VRM 模型未加載，無法套用 VRMA 動畫');
             return;
         }
+        console.log("已加載 VRM 模型!!")
         loadVRMAnimation(animationUrl, currentVrmRef.current, mixerRef, loader);
     };
 

@@ -18,6 +18,7 @@ import { syncMouthAnimation } from '../utils/syncMouthAnimation';
 import { useVRM } from '../context/VRMContext';
 import { applyFBXAnimation } from '../utils/animationUtils';
 import { VRMAnimationLoaderPlugin, VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
+import { AnimationSystem } from '../utils/AnimationSystem';
 
 // export const playProcessedAudioWithMouthAnimation = (audioUrl) => {
 //     if (!currentVrmRef.current) {
@@ -47,6 +48,8 @@ const VRMViewer = () => {
     const [error, setError] = useState(null);
 
     const modelLoadedRef = useRef(false); // 防止模型重複加載
+
+    const animationSystem = new AnimationSystem(loadAnimation, loadVRMAnimation);
 
     // 初始化 Three.js
     useEffect(() => {
@@ -262,7 +265,10 @@ const VRMViewer = () => {
 
                 // 加載完成後套用動畫
                 // loadAnimation('/animations/idle.fbx');
-                loadVRMAnimation('animations/vrma/VRMA_02.vrma');
+                // loadVRMAnimation('animations/vrma/VRMA_02.vrma');
+
+                // 開始播放起始動畫，接續待機動畫與特別動畫
+                animationSystem.playStartWithIdleAndSpecialAnimations();
 
                 // 自動加載默認動畫
                 // loadAnimation('/animations/Talking.fbx');

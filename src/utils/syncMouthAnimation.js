@@ -1,13 +1,16 @@
-import { loadVRMAnimation } from "./animationUtils";
+import { AnimationSystem } from "./AnimationSystem";
 
-export const syncMouthAnimation = (audioUrl, vrm, loadAnimation) => {
-
+export const syncMouthAnimation = (audioUrl, vrm, loadAnimation, loadVRMAnimation) => {
+    // 傳入現有的 loadAnimation 和 loadVRMAnimation 函數
+    const animationSystem = new AnimationSystem(loadAnimation, loadVRMAnimation);
+    
     if (!vrm || !vrm.expressionManager) {
         console.error('VRM 模型或表情管理器未正確加載');
         return;
     }
 
-    loadAnimation('/animations/Talking.fbx', 1.0);
+    // loadAnimation('/animations/Talking.fbx', 1.0);
+    animationSystem.playAnimation('talking');
 
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const analyser = audioContext.createAnalyser();
@@ -148,8 +151,10 @@ export const syncMouthAnimation = (audioUrl, vrm, loadAnimation) => {
         incrementSmile(); // 啟動微笑動畫
     
         // 觸發回到 idle 動畫
-        loadAnimation('/animations/idle.fbx');
-        loadVRMAnimation('animations/vrma/VRMA_02.vrma');
+        // loadAnimation('/animations/idle.fbx');
+        // loadVRMAnimation('animations/vrma/VRMA_02.vrma');
+        // animationSystem.playStartWithIdleAndSpecialAnimations();
+        animationSystem.playAnimation('idle');
     });
     
     
