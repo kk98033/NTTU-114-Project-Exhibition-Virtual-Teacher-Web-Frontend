@@ -82,8 +82,13 @@ const VRMViewer = () => {
         cameraRef.current = camera;
 
         // 設置渲染器
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            powerPreference: 'high-performance', // 優化性能
+        });
+        if (!renderer.capabilities.isWebGL2) {
+            console.warn('當前瀏覽器不支持 WebGL 2，渲染效果可能會受限');
+        }        renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         rendererRef.current = renderer;
         mountRef.current.appendChild(renderer.domElement);
