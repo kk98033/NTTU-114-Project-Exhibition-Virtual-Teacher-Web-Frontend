@@ -9,6 +9,7 @@ import { playProcessedAudioWithMouthAnimation } from './VRMViewer';
 import { syncMouthAnimation } from '../utils/syncMouthAnimation';
 import { useVRM } from '../context/VRMContext';
 import { useChat } from '../context/ChatContext';
+import { AnimationSystem } from '../utils/AnimationSystem';
 
 export const processAudioForMouthAnimation = (audioUrl, vrm) => {
     const audioContext = new AudioContext();
@@ -48,10 +49,20 @@ const BottomBar = () => {
     const [mediaRecorder, setMediaRecorder] = useState(null); // MediaRecorder 物件
     const [audioChunks, setAudioChunks] = useState([]); // 存儲錄音的音訊資料
     const { showLoading, hideLoading } = useLoading(); // 控制 Loading 動畫
-    const { addMessage } = useChat(); 
+    const { addMessage, cycleBackgroundImage } = useChat(); 
 
     const [recorder, setRecorder] = useState(null);
     const [audioContext, setAudioContext] = useState(null);
+
+    const imageList = [
+        '/images/1.JPG',
+        '/images/2.gif',
+        '/images/3.jpg',
+        '/images/4.JPG',
+        '/images/5.PNG',
+        '/images/6.jpg',
+    ];
+    const [bgImageIndex, setBgImageIndex] = useState(0);
 
     useEffect(() => {
         if (isRecording) {
@@ -74,6 +85,7 @@ const BottomBar = () => {
 
             setRecorder(newRecorder);
             setIsRecording(true);
+            cycleBackgroundImage();
         } catch (err) {
             console.error("無法訪問麥克風", err);
         }
@@ -103,11 +115,14 @@ const BottomBar = () => {
                 // const processedAudioUrl = await uploadAndProcessAudio(blob);
                 const { audioUrl, responseText, parsedResponse, transcription } = await uploadAndProcessAudio(blob);
 
+                console.log()
+                console.log()
                 console.log("音頻 URL:", audioUrl);
                 console.log("轉錄文字:", transcription);
                 console.log("回應文字:", responseText);
                 console.log("解析結果:", parsedResponse);
-                
+                console.log()
+                console.log()
 
                 // 添加用戶消息和機器人回應到上下文
                 addMessage(transcription, "user");
@@ -117,6 +132,18 @@ const BottomBar = () => {
                 // 播放處理後的音頻
                 // const audio = new Audio(audioUrl);
                 // audio.play();
+
+                // 如果 `parsedResponse` 為 3，執行背景圖片切換和動畫播放
+                if (parsedResponse.action === 3) {
+                    console.log('| 觸發背景圖片切換和動畫播放 |');
+
+                    // 切換背景圖片
+                    cycleBackgroundImage(); // 調用上下文的背景圖片切換功能
+
+                    // 播放特別動畫
+                    const animationSystem = new AnimationSystem(loadAnimation, loadVRMAnimation);
+                    animationSystem.playStartWithIdleAndSpecialAnimations();
+                }
 
                 syncMouthAnimation(audioUrl, currentVrmRef.current, loadAnimation, loadVRMAnimation); // 使用共享的 currentVrmRef
 

@@ -109,6 +109,7 @@ export class AnimationSystem {
             { action: 'animations/vrma/VRMA_04.vrma', type: 'vrma', duration: 7000 },
             { action: 'animations/vrma/VRMA_06.vrma', type: 'vrma', duration: 5000 },
             { action: 'animations/vrma/VRMA_06.vrma', type: 'vrma', duration: 7200 },
+            { action: 'animations/vrma/VRMA_02.vrma', type: 'vrma', duration: 8500 },
         ];
 
         const scheduleNextSpecialAnimation = async () => {

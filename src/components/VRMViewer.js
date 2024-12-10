@@ -11,7 +11,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader';
 import { controlBlendShapes } from './controlBlendShapes';
 import ExpressionControls from './ExpressionControls'; 
-import { FaImage, FaUndo } from 'react-icons/fa';
+import { FaImage, FaUndo, FaRedo, FaTrash } from 'react-icons/fa';
 import './VRMViewer.css';
 
 
@@ -22,6 +22,7 @@ import { useVRM } from '../context/VRMContext';
 import { applyFBXAnimation } from '../utils/animationUtils';
 import { VRMAnimationLoaderPlugin, VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
 import { AnimationSystem } from '../utils/AnimationSystem';
+import { useChat } from '../context/ChatContext';
 
 // export const playProcessedAudioWithMouthAnimation = (audioUrl) => {
 //     if (!currentVrmRef.current) {
@@ -49,6 +50,7 @@ const VRMViewer = () => {
     const clockRef = useRef(new THREE.Clock());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { clearMessages } = useChat(); // 使用 clearMessages 函數
 
     const modelLoadedRef = useRef(false); // 防止模型重複加載
 
@@ -361,39 +363,9 @@ const VRMViewer = () => {
         setBgImageIndex(-1); // 重置索引
     };
 
-    // 套用 FBX 動畫
-    // const loadAnimation = (animationUrl) => {
-    //     if (currentVrmRef.current) {
-    //         applyFBXAnimation(animationUrl, currentVrmRef.current, mixerRef);
-    //     } else {
-    //         console.error('VRM 模型未加載，無法套用動畫');
-    //     }
-    // };
-
-    // const applyFBXAnimation = () => {
-    //     const animationUrl = '/animations/Talking.fbx'; // 確保路徑正確
-    //     // const animationUrl = '/animations/animation.fbx'; // 確保路徑正確
-    //     if (!currentVrmRef.current) {
-    //         console.error('尚未加載 VRM 模型');
-    //         return;
-    //     }
-
-    //     loadMixamoAnimation(animationUrl, currentVrmRef.current)
-    //         .then((clip) => {
-    //             console.log('FBX 動畫加載成功');
-    //             if (mixerRef.current) {
-    //                 mixerRef.current.stopAllAction(); // 停止所有動作
-    //             } else {
-    //                 mixerRef.current = new THREE.AnimationMixer(currentVrmRef.current.scene);
-    //             }
-    //             const action = mixerRef.current.clipAction(clip);
-    //             action.play();
-    //         })
-    //         .catch((error) => {
-    //             console.error('FBX 動畫加載失敗:', error);
-    //             setError('FBX 動畫加載失敗');
-    //         });
-    // };
+    const resetPage = () => {
+        window.location.reload(); // 重設頁面
+    };
 
     return (
         <div>
@@ -421,6 +393,22 @@ const VRMViewer = () => {
                 style={{ display: 'none' }} // 隱藏文件輸入
                 ref={fileInputRef}
             />
+
+            {/* 重設頁面按鈕 */}
+            <button
+                onClick={resetPage}
+                className="button-style reset-page-button"
+            >
+                <FaRedo size={20} />
+            </button>
+            
+             {/* 清除 ChatBox 按鈕 */}
+            <button
+                onClick={clearMessages}
+                className="button-style clear-chat-button"
+            >
+                <FaTrash size={20} />
+            </button>
 
             {/* 顯示加載指示器 */}
             {loading && (

@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaExpand, FaCompress } from 'react-icons/fa'; // 引入 Font Awesome 的全螢幕圖示
 import VRMViewer from './components/VRMViewer';
 import ChatBox from './components/ChatBox';
@@ -10,6 +10,7 @@ import LoadingOverlay from './components/LoadingOverlay';
 import { VRMProvider } from './context/VRMContext';
 import { ChatProvider, useChat } from './context/ChatContext';
 import './App.css';
+import { AnimationSystem } from './utils/AnimationSystem';
 
 
 function App() {
