@@ -1,8 +1,11 @@
-export const syncMouthAnimation = (audioUrl, vrm) => {
+export const syncMouthAnimation = (audioUrl, vrm, loadAnimation) => {
+
     if (!vrm || !vrm.expressionManager) {
         console.error('VRM 模型或表情管理器未正確加載');
         return;
     }
+
+    loadAnimation('/animations/Talking.fbx', 1.0);
 
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const analyser = audioContext.createAnalyser();
@@ -72,9 +75,6 @@ export const syncMouthAnimation = (audioUrl, vrm) => {
         requestAnimationFrame(updateMouthAnimation);
     };
     
-    
-
-
     const playSmileAnimation = () => {
         if (Math.random() > 0.5) { // 50% 機率觸發
             vrm.expressionManager.setValue('happy', 0.1); // 微笑
@@ -136,6 +136,9 @@ export const syncMouthAnimation = (audioUrl, vrm) => {
         };
     
         incrementSmile(); // 啟動微笑動畫
+
+        // 觸發回到 idle 動畫
+        loadAnimation('/animations/idle.fbx');
     });
     
 

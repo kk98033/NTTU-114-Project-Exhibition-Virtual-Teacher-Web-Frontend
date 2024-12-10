@@ -16,6 +16,7 @@ import ExpressionControls from './ExpressionControls';
 import backgroundImage from '../assets/images/background.jpg';
 import { syncMouthAnimation } from '../utils/syncMouthAnimation';
 import { useVRM } from '../context/VRMContext';
+import { applyFBXAnimation } from '../utils/animationUtils';
 
 // export const playProcessedAudioWithMouthAnimation = (audioUrl) => {
 //     if (!currentVrmRef.current) {
@@ -27,12 +28,12 @@ import { useVRM } from '../context/VRMContext';
 // };
 
 const VRMViewer = () => {
-    const { currentVrmRef } = useVRM(); // 使用共享的 currentVrmRef
+    const { currentVrmRef, mixerRef, loadAnimation } = useVRM(); // 從 Context 獲取共享數據
     const mountRef = useRef(null);
     const fileInputRef = useRef(null);
     // const currentVrmRef = useRef(null); // 使用 useRef 管理當前的 VRM 模型
     const modelContainerRef = useRef(null); // 新增父級容器的引用
-    const mixerRef = useRef(null);
+    // const mixerRef = useRef(null);
     const [bgImage, setBgImage] = useState(backgroundImage);
     const sceneRef = useRef(new THREE.Scene());
     const cameraRef = useRef(null);
@@ -222,7 +223,11 @@ const VRMViewer = () => {
                 setLoading(false);
 
                 // 加載完成後套用動畫
-                applyFBXAnimation();
+                // loadAnimation('/animations/idle.fbx');
+                loadAnimation('animations/vrma/VRMA_01.vrma');
+
+                // 自動加載默認動畫
+                // loadAnimation('/animations/Talking.fbx');
             },
             undefined,
             (error) => {
@@ -280,29 +285,38 @@ const VRMViewer = () => {
     };
 
     // 套用 FBX 動畫
-    const applyFBXAnimation = () => {
-        const animationUrl = '/animations/animation.fbx'; // 確保路徑正確
-        if (!currentVrmRef.current) {
-            console.error('尚未加載 VRM 模型');
-            return;
-        }
+    // const loadAnimation = (animationUrl) => {
+    //     if (currentVrmRef.current) {
+    //         applyFBXAnimation(animationUrl, currentVrmRef.current, mixerRef);
+    //     } else {
+    //         console.error('VRM 模型未加載，無法套用動畫');
+    //     }
+    // };
 
-        loadMixamoAnimation(animationUrl, currentVrmRef.current)
-            .then((clip) => {
-                console.log('FBX 動畫加載成功');
-                if (mixerRef.current) {
-                    mixerRef.current.stopAllAction(); // 停止所有動作
-                } else {
-                    mixerRef.current = new THREE.AnimationMixer(currentVrmRef.current.scene);
-                }
-                const action = mixerRef.current.clipAction(clip);
-                action.play();
-            })
-            .catch((error) => {
-                console.error('FBX 動畫加載失敗:', error);
-                setError('FBX 動畫加載失敗');
-            });
-    };
+    // const applyFBXAnimation = () => {
+    //     const animationUrl = '/animations/Talking.fbx'; // 確保路徑正確
+    //     // const animationUrl = '/animations/animation.fbx'; // 確保路徑正確
+    //     if (!currentVrmRef.current) {
+    //         console.error('尚未加載 VRM 模型');
+    //         return;
+    //     }
+
+    //     loadMixamoAnimation(animationUrl, currentVrmRef.current)
+    //         .then((clip) => {
+    //             console.log('FBX 動畫加載成功');
+    //             if (mixerRef.current) {
+    //                 mixerRef.current.stopAllAction(); // 停止所有動作
+    //             } else {
+    //                 mixerRef.current = new THREE.AnimationMixer(currentVrmRef.current.scene);
+    //             }
+    //             const action = mixerRef.current.clipAction(clip);
+    //             action.play();
+    //         })
+    //         .catch((error) => {
+    //             console.error('FBX 動畫加載失敗:', error);
+    //             setError('FBX 動畫加載失敗');
+    //         });
+    // };
 
     return (
         <div>
