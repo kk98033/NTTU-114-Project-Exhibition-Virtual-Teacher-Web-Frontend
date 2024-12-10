@@ -41,6 +41,7 @@ const VRMViewer = () => {
     const rendererRef = useRef(null);
     const composerRef = useRef(null);
     const controlsRef = useRef(null);
+    const lookAtTarget = useRef(new THREE.Object3D()); 
     const clockRef = useRef(new THREE.Clock());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -98,6 +99,10 @@ const VRMViewer = () => {
         controls.update();
         controlsRef.current = controls;
 
+        // 新增 LookAt 目標
+        lookAtTarget.current.position.set(0, 1, 0); // 設置目標位置在螢幕正中央
+        camera.add(lookAtTarget.current);
+
         // 添加燈光
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
         directionalLight.position.set(1.0, 1.0, 1.0).normalize();
@@ -125,6 +130,16 @@ const VRMViewer = () => {
         };
 
         animate();
+
+        // 監聽滑鼠移動事件
+        const handleMouseMove = (event) => {
+            // 動態更新 LookAt 目標位置
+            lookAtTarget.current.position.x =
+                10.0 * ((event.clientX - 0.5 * window.innerWidth) / window.innerHeight);
+            lookAtTarget.current.position.y =
+                -10.0 * ((event.clientY - 0.5 * window.innerHeight) / window.innerHeight);
+        };
+        window.addEventListener('mousemove', handleMouseMove);
 
         // 處理窗口大小調整
         const handleResize = () => {
@@ -204,6 +219,19 @@ const VRMViewer = () => {
                     vrm.scene.add(lookAtQuatProxy);
                 }
 
+                // 設置 LookAt 目標
+                if (!vrm.lookAt.quaternionProxy) {
+                    const lookAtQuatProxy = new VRMLookAtQuaternionProxy(vrm.lookAt);
+                    vrm.lookAt.quaternionProxy = lookAtQuatProxy;
+                    vrm.scene.add(lookAtQuatProxy);
+                }
+                vrm.lookAt.target = lookAtTarget.current;
+
+                // 將頭部的 LookAt 功能啟用
+                const headBone = vrm.humanoid.getBoneNode('head');
+                if (headBone) {
+                    headBone.lookAt(lookAtTarget.current.position);
+                }
 
                 // 將模型添加到父級容器
                 modelContainerRef.current.add(vrm.scene);

@@ -130,6 +130,14 @@ export const syncMouthAnimation = (audioUrl, vrm, loadAnimation) => {
                             vrm.expressionManager.setValue('happy', smileValue);
                             currentFrame++;
                             requestAnimationFrame(decrementSmile); // 下一幀
+                        } else {
+                            // 在微笑結束後，設置嘴巴閉合並保持微笑
+                            vrm.expressionManager.setValue('aa', 0); // 關閉 'aa'
+                            vrm.expressionManager.setValue('ih', 0); // 關閉 'ih'
+                            vrm.expressionManager.setValue('ou', 0); // 關閉 'ou'
+                            vrm.expressionManager.setValue('ee', 0); // 關閉 'ee'
+                            vrm.expressionManager.setValue('oh', 0); // 關閉 'oh'
+                            vrm.expressionManager.setValue('happy', 0); // 嘴巴保持輕微微笑
                         }
                     };
                     decrementSmile();
@@ -138,11 +146,12 @@ export const syncMouthAnimation = (audioUrl, vrm, loadAnimation) => {
         };
     
         incrementSmile(); // 啟動微笑動畫
-
+    
         // 觸發回到 idle 動畫
         loadAnimation('/animations/idle.fbx');
         loadVRMAnimation('animations/vrma/VRMA_02.vrma');
     });
+    
     
 
     audioElement.play().catch((error) => {
