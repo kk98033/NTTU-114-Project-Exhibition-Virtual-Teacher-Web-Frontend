@@ -1,0 +1,44 @@
+/* 通用按鈕樣式 */
+.button-style {
+    position: fixed;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.2s;
+  }
+  
+  .button-style:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  
+  .button-style:active {
+    transform: scale(0.95);
+  }
+  
+  /* 背景更改按鈕樣式 */
+  .change-bg-button {
+    top: 20px;
+    left: 70px; /* 相對於全螢幕按鈕右移一些 */
+  }
+  
+  /* 全螢幕按鈕樣式 */
+  .fullscreen-toggle {
+    top: 20px;
+    left: 20px;
+  }
+  
+/* 回復背景按鈕樣式 */
+.reset-bg-button {
+    top: 20px;
+    left: 120px; /* 相對於更改背景按鈕右移一些 */
+}

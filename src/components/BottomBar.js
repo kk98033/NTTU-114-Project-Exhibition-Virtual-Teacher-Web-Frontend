@@ -8,6 +8,7 @@ import Recorder from 'recorder-js';
 import { playProcessedAudioWithMouthAnimation } from './VRMViewer';
 import { syncMouthAnimation } from '../utils/syncMouthAnimation';
 import { useVRM } from '../context/VRMContext';
+import { useChat } from '../context/ChatContext';
 
 export const processAudioForMouthAnimation = (audioUrl, vrm) => {
     const audioContext = new AudioContext();
@@ -47,6 +48,7 @@ const BottomBar = () => {
     const [mediaRecorder, setMediaRecorder] = useState(null); // MediaRecorder 物件
     const [audioChunks, setAudioChunks] = useState([]); // 存儲錄音的音訊資料
     const { showLoading, hideLoading } = useLoading(); // 控制 Loading 動畫
+    const { addMessage } = useChat(); 
 
     const [recorder, setRecorder] = useState(null);
     const [audioContext, setAudioContext] = useState(null);
@@ -98,22 +100,38 @@ const BottomBar = () => {
             showLoading();
             try {
                 // 呼叫 API 發送音訊
-                const processedAudioUrl = await uploadAndProcessAudio(blob);
+                // const processedAudioUrl = await uploadAndProcessAudio(blob);
+                const { audioUrl, responseText, parsedResponse, transcription } = await uploadAndProcessAudio(blob);
 
-                syncMouthAnimation(processedAudioUrl, currentVrmRef.current, loadAnimation, loadVRMAnimation); // 使用共享的 currentVrmRef
+                console.log("音頻 URL:", audioUrl);
+                console.log("轉錄文字:", transcription);
+                console.log("回應文字:", responseText);
+                console.log("解析結果:", parsedResponse);
+                
+
+                // 添加用戶消息和機器人回應到上下文
+                addMessage(transcription, "user");
+                addMessage(responseText, "bot");
+                
 
                 // 播放處理後的音頻
-                const audioElement = new Audio(processedAudioUrl);
+                // const audio = new Audio(audioUrl);
+                // audio.play();
+
+                syncMouthAnimation(audioUrl, currentVrmRef.current, loadAnimation, loadVRMAnimation); // 使用共享的 currentVrmRef
+
+                // 播放處理後的音頻
+                const audioElement = new Audio(audioUrl);
                 // audioElement.play();
 
                 // 提供下載連結
                 const processedDownloadLink = document.createElement('a');
-                processedDownloadLink.href = processedAudioUrl;
+                processedDownloadLink.href = audioUrl;
                 processedDownloadLink.download = 'processed_audio.wav';
                 processedDownloadLink.textContent = '下載處理後的音頻';
                 document.body.appendChild(processedDownloadLink);
 
-                console.log('DEBUG: 音頻處理完成，已生成音頻 URL：', processedAudioUrl);
+                console.log('DEBUG: 音頻處理完成，已生成音頻 URL：', audioUrl);
             } catch (error) {
                 console.error('DEBUG: 音頻處理失敗：', error.message);
             } finally {
@@ -152,14 +170,14 @@ const BottomBar = () => {
                 className={`voice-button ${isRecording ? 'recording' : ''}`} 
                 onClick={handleVoiceButtonClick}
             >
-                {isRecording ? <FaStop size={100} /> : <FaMicrophone size={100} />}
+                {isRecording ? <FaStop size={50} /> : <FaMicrophone size={50} />}
             </button>
-            <button
+            {/* <button
                 className="test-button" // 添加一個新的類名
                 onClick={testAudioLoop} // 綁定測試邏輯
             >
                 測試音頻循環播放
-            </button>
+            </button> */}
         </div>
     );
 };

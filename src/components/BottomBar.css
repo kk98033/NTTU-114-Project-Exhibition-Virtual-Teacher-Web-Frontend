@@ -44,39 +44,19 @@
 
 .voice-button.recording {
     background-color: #e74c3c;
-    /* 錄音中背景變成紅色 */
-    animation: pulse 1s infinite;
-    /* 添加一個脈衝動畫效果 */
-    transform: scale(1.1);
-    /* 錄音時按鈕稍微變大 */
+    animation: pulse-border 1s infinite;
 }
 
-/* 脈衝動畫效果 */
-@keyframes pulse {
+@keyframes pulse-border {
     0% {
-        transform: scale(1);
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
     }
 
     50% {
-        transform: scale(1.15);
+        box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
     }
 
     100% {
-        transform: scale(1);
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
     }
-}
-
-.test-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.test-button:hover {
-    background-color: #45a049;
 }

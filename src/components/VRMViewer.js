@@ -11,6 +11,9 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader';
 import { controlBlendShapes } from './controlBlendShapes';
 import ExpressionControls from './ExpressionControls'; 
+import { FaImage, FaUndo } from 'react-icons/fa';
+import './VRMViewer.css';
+
 
 // 引入背景圖片
 import backgroundImage from '../assets/images/background.jpg';
@@ -51,6 +54,26 @@ const VRMViewer = () => {
 
     const animationSystem = new AnimationSystem(loadAnimation, loadVRMAnimation);
 
+
+    const imageList = [
+        '/images/1.JPG',
+        '/images/2.gif',
+        '/images/3.jpg',
+        '/images/4.JPG',
+        '/images/5.PNG',
+        '/images/6.jpg',
+    ];
+
+    const [bgImageIndex, setBgImageIndex] = useState(-1); // 初始值為 -1，表示使用初始背景圖片
+
+    const cycleToNextImage = () => {
+        setBgImageIndex((prevIndex) => {
+            const newIndex = (prevIndex + 1) % imageList.length; // 循環切換
+            setBgImage(imageList[newIndex]);
+            return newIndex;
+        });
+    };
+    
     // 初始化 Three.js
     useEffect(() => {
         console.log('初始化 Three.js 的 useEffect 被調用');
@@ -333,6 +356,11 @@ const VRMViewer = () => {
         }
     };
 
+    const resetToInitialBackground = () => {
+        setBgImage(backgroundImage);
+        setBgImageIndex(-1); // 重置索引
+    };
+
     // 套用 FBX 動畫
     // const loadAnimation = (animationUrl) => {
     //     if (currentVrmRef.current) {
@@ -369,23 +397,23 @@ const VRMViewer = () => {
 
     return (
         <div>
-            {/* 自定義按鈕來更換背景圖片（如果需要） */}
+            {/* 更改背景按鈕 */}
             <button
-                onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                style={{
-                    position: 'absolute',
-                    top: 10,
-                    left: 10,
-                    zIndex: 1,
-                    padding: '10px 20px',
-                    backgroundColor: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                }}
+                onClick={cycleToNextImage}
+                className="button-style change-bg-button"
             >
-                更換背景
+                <FaImage size={20} />
             </button>
+
+            {/* 回復背景按鈕 */}
+            <button
+                onClick={resetToInitialBackground}
+                className="button-style reset-bg-button"
+            >
+                <FaUndo size={20} />
+            </button>
+
+            {/* 隱藏的文件輸入 */}
             <input
                 type="file"
                 accept="image/*"
