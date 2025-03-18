@@ -67,7 +67,7 @@ const BottomBar = () => {
     useEffect(() => {
         if (isRecording) {
             // 開始錄音後，設置倒計時自動停止
-            const timer = setTimeout(stopRecording, 5000); // 5秒後自動停止錄音
+            const timer = setTimeout(stopRecording, 10000); // 10秒後自動停止錄音
             return () => clearTimeout(timer); // 清除計時器
         }
     }, [isRecording]);
